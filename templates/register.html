@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Create account — MediCare{% endblock %}
+{% block public_content %}
+<div class="auth-page">
+  <a class="auth-back" href="/"><i class="fa-solid fa-arrow-left"></i> Back to MediCare</a>
+  <div class="auth-page-card register-card">
+    <section class="auth-page-visual">
+      <a class="brand dark-brand" href="/"><span class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></span>MediCare</a>
+      <div class="auth-page-copy"><span class="eyebrow">GET STARTED</span><h1>Your care,<br><em>organized.</em></h1><p>Create a patient or doctor account and manage your healthcare workflow with less friction.</p></div>
+      <div class="auth-benefits"><span><i class="fa-solid fa-calendar-check"></i> Appointments</span><span><i class="fa-solid fa-prescription-bottle-medical"></i> Prescriptions</span><span><i class="fa-solid fa-user-circle"></i> Personal profile</span></div>
+    </section>
+    <section class="auth-page-form">
+      <div class="auth-form-heading"><span class="eyebrow">CREATE ACCOUNT</span><h2>Choose your portal</h2><p>Fill in your details. You can update your profile later.</p></div>
+      <div class="role-switch page-role"><button data-role="patient" class="active" onclick="setRegisterRole('patient')"><i class="fa-solid fa-user"></i> Patient</button><button data-role="doctor" onclick="setRegisterRole('doctor')"><i class="fa-solid fa-user-doctor"></i> Doctor</button></div>
+      <form class="form-grid auth-page-form-grid" onsubmit="submitRegisterPage(event)">
+        <label>Full name<input id="pageRegName" type="text" autocomplete="name" required></label>
+        <label>Phone<input id="pageRegPhone" type="tel" autocomplete="tel" required></label>
+        <label class="full">Email<input id="pageRegEmail" type="email" autocomplete="email" required></label>
+        <label>Password<input id="pageRegPassword" type="password" autocomplete="new-password" minlength="6" required></label>
+        <label id="pageAgeField">Age<input id="pageRegAge" type="number" min="1" max="120" required></label>
+        <label id="pageAddressField" class="full">Address<input id="pageRegAddress" type="text" required></label>
+        <label id="pageSpecializationField" class="full hidden">Specialization<input id="pageRegSpecialization" type="text"></label>
+        <button class="btn primary full-btn" type="submit">Create account <i class="fa-solid fa-arrow-right"></i></button>
+        <p id="pageAuthError" class="form-error"></p>
+      </form>
+      <p class="auth-switch-text">Already have an account? <a href="/login">Sign in</a></p>
+    </section>
+  </div>
+</div>
+{% endblock %}
