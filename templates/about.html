@@ -1,162 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About - MediCare</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-    <div class="dashboard-container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <i class="fas fa-hospital-user"></i>
-                <span>MediCare</span>
-            </div>
-            <ul class="sidebar-menu">
-                <li><a href="/dashboard"><i class="fas fa-chart-line"></i> Dashboard</a></li>
-                <li><a href="/appointments"><i class="fas fa-calendar"></i> Appointments</a></li>
-                <li><a href="/doctors"><i class="fas fa-stethoscope"></i> Doctors</a></li>
-                <li><a href="#"><i class="fas fa-prescription-bottle"></i> Prescriptions</a></li>
-                <li><a href="#"><i class="fas fa-receipt"></i> Billing</a></li>
-                <li><a href="/about" class="active"><i class="fas fa-info-circle"></i> About</a></li>
-                <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-            </ul>
-        </aside>
+{% extends "base.html" %}
+{% block title %}About MediCare{% endblock %}
 
-        <!-- Main Content -->
-        <main class="dashboard-main">
-            <section class="about-main">
-                <div class="about-hero">
-                    <h1>About MediCare</h1>
-                    <p>Revolutionizing Healthcare Management</p>
-                </div>
-
-                <div class="about-container">
-                    <div class="about-card">
-                        <h2>What is MediCare?</h2>
-                        <p>MediCare is a comprehensive Hospital Management System designed to streamline healthcare operations and improve patient care. Our platform connects patients, doctors, and hospital staff seamlessly, enabling efficient appointment scheduling, prescription management, and billing services.</p>
-                    </div>
-
-                    <div class="about-card">
-                        <h2>Our Mission</h2>
-                        <p>To provide an accessible, user-friendly platform that enhances the quality of healthcare delivery and patient experience through modern technology and efficient management systems.</p>
-                    </div>
-
-                    <div class="about-card">
-                        <h2>Key Features</h2>
-                        <ul class="features-list">
-                            <li><i class="fas fa-check"></i> Easy Appointment Booking</li>
-                            <li><i class="fas fa-check"></i> Digital Prescription Management</li>
-                            <li><i class="fas fa-check"></i> Complete Medical Records</li>
-                            <li><i class="fas fa-check"></i> Transparent Billing System</li>
-                            <li><i class="fas fa-check"></i> Doctor Availability Tracking</li>
-                            <li><i class="fas fa-check"></i> Real-time Notifications</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="developers-section">
-                    <h2>Meet the Developers</h2>
-                    <div class="developers-grid">
-                        <div class="developer-profile">
-                            <div class="profile-avatar">
-                                <i class="fas fa-user-circle"></i>
-                            </div>
-                            <h3>Dhvanit-198</h3>
-                            <p class="role">Full Stack Developer</p>
-                            <p class="bio">Passionate about building scalable web applications with modern technologies. Specializing in backend development and database architecture.</p>
-                            <div class="skills">
-                                <span class="skill-tag">Python</span>
-                                <span class="skill-tag">Flask</span>
-                                <span class="skill-tag">PostgreSQL</span>
-                                <span class="skill-tag">JavaScript</span>
-                            </div>
-                        </div>
-
-                        <div class="developer-profile">
-                            <div class="profile-avatar">
-                                <i class="fas fa-user-circle"></i>
-                            </div>
-                            <h3>Tirth-123</h3>
-                            <p class="role">Full Stack Developer</p>
-                            <p class="bio">Creative developer focused on building intuitive user interfaces and seamless user experiences. Expertise in frontend technologies and responsive design.</p>
-                            <div class="skills">
-                                <span class="skill-tag">HTML/CSS</span>
-                                <span class="skill-tag">JavaScript</span>
-                                <span class="skill-tag">React</span>
-                                <span class="skill-tag">UI/UX</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="institution-section">
-                    <h2>Institution</h2>
-                    <div class="institution-card">
-                        <div class="institution-icon">
-                            <i class="fas fa-graduation-cap"></i>
-                        </div>
-                        <div class="institution-info">
-                            <h3>M.L.J. Gandhi Institute of Technology</h3>
-                            <p>Building Future Tech Leaders</p>
-                            <p class="description">A premier educational institution dedicated to fostering innovation and excellence in technology education.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tech-stack-section">
-                    <h2>Technology Stack</h2>
-                    <div class="tech-grid">
-                        <div class="tech-card">
-                            <i class="fas fa-server"></i>
-                            <h4>Backend</h4>
-                            <p>Python Flask, SQLAlchemy</p>
-                        </div>
-                        <div class="tech-card">
-                            <i class="fas fa-laptop-code"></i>
-                            <h4>Frontend</h4>
-                            <p>HTML5, CSS3, JavaScript</p>
-                        </div>
-                        <div class="tech-card">
-                            <i class="fas fa-database"></i>
-                            <h4>Database</h4>
-                            <p>PostgreSQL</p>
-                        </div>
-                        <div class="tech-card">
-                            <i class="fas fa-cloud"></i>
-                            <h4>Deployment</h4>
-                            <p>Railway.app</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="contact-info-section">
-                    <h2>Contact & Support</h2>
-                    <div class="contact-info-grid">
-                        <div class="contact-info-card">
-                            <i class="fas fa-envelope"></i>
-                            <h4>DEMO Email</h4>
-                            <p>support@medicare.com</p>
-                        </div>
-                        <div class="contact-info-card">
-                            <i class="fas fa-phone"></i>
-                            <h4>WHATSAPP CONTACT</h4>
-                            <p>+1 7058004135</p>
-                        </div>
-                        <div class="contact-info-card">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <h4>Location</h4>
-                            <p>Healthcare Complex, Medical City</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
+{% block content %}
+<div class="card">
+    <h2>Our Mission</h2>
+    <p>We are revolutionizing healthcare with a click.</p>
+    
+    <h3 style="margin-top: 2rem;">Developers</h3>
+    <div class="stats-grid">
+        <div class="card">
+            <h4>Tirth</h4>
+            <p>Backend Architect</p>
+        </div>
+        <div class="card">
+            <h4>Dhvanit</h4>
+            <p>UI/UX Designer</p>
+        </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-</body>
-</html>
+    <div class="card" style="margin-top: 2rem; background: var(--bg-light);">
+        <h4>Institution</h4>
+        <p>M.L.J. Gandhi Institute of Technology</p>
+    </div>
+</div>
+{% endblock %}
