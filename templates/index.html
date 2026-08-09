@@ -1,52 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>MediCare - Your Health First</title>
+    <meta charset="UTF-8">
+    <title>MediCare | Modern Healthcare</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="hero-section">
-        <nav>
-            <div class="logo"><i class="fas fa-heartbeat"></i> MediCare</div>
-            <div style="display:flex; gap:15px">
+    <div class="hero">
+        <nav class="animate">
+            <div class="logo"><i class="fas fa-hand-holding-medical"></i> MediCare</div>
+            <div style="display:flex; gap:12px">
                 <button class="btn" onclick="openModal('loginModal')">Login</button>
-                <button class="btn btn-primary" onclick="openModal('regModal')">Get Started</button>
+                <button class="btn btn-primary" onclick="openModal('regModal')">Join Now</button>
             </div>
         </nav>
 
-        <div style="max-width: 600px; margin-top: 5rem;">
-            <h1 style="font-size: 3.5rem; line-height: 1.2; margin-bottom: 1.5rem;">Managing your health is now <span style="color:var(--primary)">Simpler.</span></h1>
-            <p style="color:var(--text-gray); font-size: 1.2rem; margin-bottom: 2rem;">Book appointments, track medical records, and connect with top doctors from the comfort of your home.</p>
-            <button class="btn btn-primary" onclick="openModal('regModal')" style="padding: 15px 40px; font-size: 1.1rem;">Register Now</button>
+        <div class="animate" style="max-width: 650px; margin-top: 6rem;">
+            <h1 style="font-size: 3.8rem; line-height: 1.1; margin-bottom: 1.5rem;">Better Care for a <span style="color:var(--primary)">Better Life.</span></h1>
+            <p style="color:var(--text-gray); font-size: 1.2rem; margin-bottom: 2.5rem;">Access top-tier medical assistance, book appointments instantly, and manage your health records in one secure place.</p>
+            <button class="btn btn-primary" onclick="openModal('regModal')" style="padding: 16px 45px; font-size: 1.1rem;">Create Free Account</button>
         </div>
     </div>
 
-    <!-- Login Modal -->
+    <!-- Modals -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <h2>Welcome Back</h2>
-            <p style="color:var(--text-gray); margin-bottom: 1.5rem;">Login to your account</p>
+            <h2 style="margin-bottom: 1rem;">Login</h2>
             <input type="email" id="loginEmail" placeholder="Email Address">
             <input type="password" id="loginPassword" placeholder="Password">
-            <button class="btn btn-primary" onclick="handleLogin()" style="width: 100%;">Login</button>
-            <p onclick="closeModal('loginModal')" style="text-align:center; margin-top:1rem; cursor:pointer; color:var(--text-gray)">Cancel</p>
+            <button class="btn btn-primary" onclick="handleLogin()" style="width:100%">Sign In</button>
+            <p onclick="closeModal('loginModal')" style="text-align:center; margin-top:1rem; cursor:pointer; font-size: 0.9rem; color:var(--text-gray)">Close</p>
         </div>
     </div>
 
-    <!-- Register Modal -->
     <div id="regModal" class="modal">
         <div class="modal-content">
-            <h2>Create Account</h2>
+            <h2 style="margin-bottom: 1rem;">Register</h2>
             <input type="text" id="regName" placeholder="Full Name">
             <input type="email" id="regEmail" placeholder="Email Address">
             <input type="password" id="regPassword" placeholder="Password">
             <select id="regRole">
-                <option value="patient">I am a Patient</option>
-                <option value="doctor">I am a Doctor</option>
+                <option value="patient">I'm a Patient</option>
+                <option value="doctor">I'm a Doctor</option>
             </select>
-            <button class="btn btn-primary" onclick="handleRegister()" style="width: 100%;">Register</button>
-            <p onclick="closeModal('regModal')" style="text-align:center; margin-top:1rem; cursor:pointer; color:var(--text-gray)">Cancel</p>
+            <button class="btn btn-primary" onclick="handleRegister()" style="width:100%">Create Account</button>
+            <p onclick="closeModal('regModal')" style="text-align:center; margin-top:1rem; cursor:pointer; font-size: 0.9rem; color:var(--text-gray)">Close</p>
         </div>
     </div>
 
