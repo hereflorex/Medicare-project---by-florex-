@@ -3,86 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediCare | Health Portal</title>
-    <!-- Fonts & Icons -->
+    <title>MediCare | Next-Gen Healthcare</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <style>
-        /* CSS directly here to fix UI mess */
-        :root { --primary: #2563eb; --bg: #f8fafc; --text: #1e293b; }
+        :root { --primary: #0061ff; --secondary: #60efff; --dark: #0f172a; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); color: var(--text); }
-
-        .hero { min-height: 100vh; padding: 20px 8%; background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%); }
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; }
-        .logo { font-size: 24px; font-weight: 700; color: var(--primary); }
-
-        .content { margin-top: 80px; max-width: 600px; animation: fadeInUp 0.8s ease; }
-        h1 { font-size: 56px; line-height: 1.1; margin-bottom: 20px; }
-        p { font-size: 18px; color: #64748b; margin-bottom: 30px; }
-
-        .btn { padding: 12px 28px; border-radius: 10px; border: none; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 10px 15px -3px rgba(37,99,235,0.3); }
-        .btn-primary:hover { transform: translateY(-3px); }
-        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); margin-left: 10px; }
-
-        /* Modal Style */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 40px; border-radius: 20px; width: 100%; max-width: 400px; position: relative; }
-        .close-btn { position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 20px; color: #94a3b8; }
-
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e2e8f0; border-radius: 10px; outline: none; }
         
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        body { background: #fdfdfd; color: var(--dark); overflow-x: hidden; }
+
+        /* Animated Background Gradient */
+        .bg-blob {
+            position: fixed; top: -10%; right: -10%; width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(0,97,255,0.1) 0%, transparent 70%);
+            z-index: -1; animation: float 10s infinite alternate;
+        }
+
+        @keyframes float { from { transform: translate(0,0); } to { transform: translate(-100px, 100px); } }
+
+        /* Navbar */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 25px 10%; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 26px; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+
+        /* Hero Section */
+        .hero { display: flex; align-items: center; justify-content: space-between; padding: 80px 10%; min-height: 90vh; }
+        .hero-text { flex: 1; }
+        .hero-text h1 { font-size: 4rem; line-height: 1.1; margin-bottom: 20px; font-weight: 700; color: var(--dark); }
+        .hero-text p { font-size: 1.1rem; color: #64748b; margin-bottom: 40px; max-width: 500px; }
+
+        /* Hero Image (Animated Doctor Illustration) */
+        .hero-img { flex: 1; display: flex; justify-content: flex-end; position: relative; }
+        .hero-img img { width: 110%; max-width: 600px; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.1)); animation: doctorFloat 4s ease-in-out infinite; }
+
+        @keyframes doctorFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+
+        /* Buttons */
+        .btn { padding: 15px 35px; border-radius: 50px; border: none; cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 1rem; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; box-shadow: 0 10px 20px rgba(0,97,255,0.3); }
+        .btn-primary:hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(0,97,255,0.4); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); margin-left: 15px; }
+
+        /* Modals Glassmorphism */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(10px); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 40px; border-radius: 30px; width: 100%; max-width: 420px; border: 1px solid rgba(255,255,255,0.5); }
+        
+        input, select { width: 100%; padding: 15px; margin: 12px 0; border: 1.5px solid #e2e8f0; border-radius: 15px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0,97,255,0.1); }
+
+        .close-btn { float: right; cursor: pointer; font-size: 24px; color: #94a3b8; transition: 0.3s; }
+        .close-btn:hover { color: var(--primary); }
+
+        @media (max-width: 1000px) {
+            .hero { flex-direction: column; text-align: center; padding-top: 40px; }
+            .hero-img { margin-top: 50px; justify-content: center; }
+            .hero-text h1 { font-size: 2.8rem; }
+        }
     </style>
 </head>
 <body>
 
-<div class="hero">
-    <nav>
-        <div class="logo"><i class="fas fa-hand-holding-medical"></i> MediCare</div>
-        <div>
-            <button class="btn btn-outline" onclick="toggleModal('loginModal', true)">Login</button>
-        </div>
-    </nav>
+<div class="bg-blob"></div>
 
-    <div class="content">
-        <h1>Your Health, <br><span style="color:var(--primary)">Our Responsibility.</span></h1>
-        <p>Book appointments with the best doctors and manage your medical history effortlessly.</p>
-        <button class="btn btn-primary" onclick="toggleModal('regModal', true)">Get Started Free</button>
+<nav data-aos="fade-down">
+    <div class="logo"><i class="fas fa-stethoscope"></i> MediCare</div>
+    <div>
+        <button class="btn btn-outline" onclick="toggleModal('loginModal', true)">Login</button>
     </div>
-</div>
+</nav>
 
-<!-- Login Modal -->
+<section class="hero">
+    <div class="hero-text" data-aos="fade-right">
+        <h1>Advanced <br><span style="color:var(--primary)">Healthcare</span> <br>Platform.</h1>
+        <p>Expert medical advice, seamless appointment bookings, and digital records at your fingertips. Connect with verified doctors in minutes.</p>
+        <button class="btn btn-primary" onclick="toggleModal('regModal', true)">Join Now — It's Free</button>
+    </div>
+    <div class="hero-img" data-aos="zoom-in">
+        <!-- Using a professional 3D medical character PNG -->
+        <img src="https://cdni.iconscout.com/illustration/premium/thumb/male-doctor-illustration-download-in-svg-png-gif-file-formats--medical-specialist-expert-professional-3d-character-pack-people-illustrations-5349187.png" alt="Doctor">
+    </div>
+</section>
+
+<!-- Modals (Same ID and Logic) -->
 <div id="loginModal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="toggleModal('loginModal', false)">&times;</span>
-        <h2>Welcome Back</h2>
+        <h2 style="margin-bottom: 10px;">Welcome Back!</h2>
+        <p style="color: #64748b; margin-bottom: 25px;">Please enter your details.</p>
         <input type="email" id="loginEmail" placeholder="Email Address">
         <input type="password" id="loginPassword" placeholder="Password">
-        <button class="btn btn-primary" style="width:100%" onclick="loginUser()">Login Now</button>
+        <button class="btn btn-primary" style="width:100%; margin-top: 10px;" onclick="loginUser()">Sign In</button>
     </div>
 </div>
 
-<!-- Register Modal -->
 <div id="regModal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="toggleModal('regModal', false)">&times;</span>
-        <h2>Create Account</h2>
+        <h2 style="margin-bottom: 10px;">Create Account</h2>
+        <p style="color: #64748b; margin-bottom: 25px;">Start your journey with us today.</p>
         <input type="text" id="regName" placeholder="Full Name">
         <input type="email" id="regEmail" placeholder="Email Address">
-        <input type="password" id="regPassword" placeholder="Password">
+        <input type="password" id="regPassword" placeholder="Create Password">
         <select id="regRole">
-            <option value="patient">I'm a Patient</option>
-            <option value="doctor">I'm a Doctor</option>
+            <option value="patient">I am a Patient</option>
+            <option value="doctor">I am a Doctor</option>
         </select>
-        <button class="btn btn-primary" style="width:100%" onclick="registerUser()">Register</button>
+        <button class="btn btn-primary" style="width:100%; margin-top: 10px;" onclick="registerUser()">Create Account</button>
     </div>
 </div>
 
+<!-- Scripts -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-    // Inline JS to fix "Buttons Not Working"
+    AOS.init({ duration: 1000 });
+
     function toggleModal(id, show) {
         document.getElementById(id).style.display = show ? 'flex' : 'none';
     }
@@ -90,20 +126,16 @@
     async function loginUser() {
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
+        if(!email || !password) return alert("Fill all fields");
 
-        try {
-            const res = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-            const data = await res.json();
-            if (data.success) {
-                window.location.href = '/dashboard';
-            } else {
-                alert(data.error);
-            }
-        } catch (e) { alert("Server error!"); }
+        const res = await fetch('/api/login', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({email, password})
+        });
+        const data = await res.json();
+        if(data.success) window.location.href = '/dashboard';
+        else alert(data.error);
     }
 
     async function registerUser() {
@@ -112,18 +144,24 @@
         const password = document.getElementById('regPassword').value;
         const role = document.getElementById('regRole').value;
 
+        if(!name || !email || !password) return alert("Fill all fields");
+
         try {
             const res = await fetch('/api/register', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, password, role })
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name, email, password, role})
             });
             const data = await res.json();
-            if (data.success) {
-                alert("Success! Now please login.");
+            if(data.success) {
+                alert("Account Created! Please Login.");
                 location.reload();
-            } else { alert(data.error); }
-        } catch (e) { alert("Error connecting to server"); }
+            } else {
+                alert(data.error);
+            }
+        } catch (e) {
+            alert("Connection error! Make sure backend is running.");
+        }
     }
 </script>
 
