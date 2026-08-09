@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MediCare - Professional</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <h2 style="color:var(--primary)"><i class="fas fa-plus-square"></i> MediCare</h2>
+            <nav style="margin-top: 2rem;">
+                <a href="/dashboard" class="btn" style="display:block; text-align:left;"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="/doctors" class="btn" style="display:block; text-align:left;"><i class="fas fa-user-md"></i> Doctors</a>
+                <a href="/appointments" class="btn" style="display:block; text-align:left;"><i class="fas fa-calendar-alt"></i> My Bookings</a>
+                <a href="/logout" class="btn" style="display:block; text-align:left; color:red; margin-top:5rem;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+        
+        <main class="main-content">
+            <header style="display:flex; justify-content:space-between; margin-bottom:2rem;">
+                <h1>{% block title %}{% endblock %}</h1>
+                <div class="user-info">Welcome, <strong>{{ session['user_name'] }}</strong></div>
+            </header>
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
