@@ -1,9 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Dashboard Overview{% endblock %}
+{% block title %}Overview{% endblock %}
 {% block content %}
-<div class="stats-grid">
-    <div class="card"><h3>Doctors</h3><p>{{ stats.doctors }}</p></div>
-    <div class="card"><h3>Patients</h3><p>{{ stats.patients }}</p></div>
-    <div class="card"><h3>Bookings</h3><p>{{ stats.appointments }}</p></div>
+<div class="stats-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:1.5rem;">
+    <div class="card">
+        <p style="color:var(--text-gray)">Active Doctors</p>
+        <h2 style="font-size: 2rem; color:var(--primary)">{{ stats.doctors }}</h2>
+    </div>
+    <div class="card">
+        <p style="color:var(--text-gray)">Total Patients</p>
+        <h2 style="font-size: 2rem; color:var(--primary)">{{ stats.patients }}</h2>
+    </div>
+    <div class="card">
+        <p style="color:var(--text-gray)">My Appointments</p>
+        <h2 style="font-size: 2rem; color:var(--primary)">{{ stats.appointments }}</h2>
+    </div>
 </div>
 {% endblock %}
