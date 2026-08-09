@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctors - MediCare</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-hospital-user"></i>
+                <span>MediCare</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="/dashboard"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="/appointments"><i class="fas fa-calendar"></i> Appointments</a></li>
+                <li><a href="/doctors" class="active"><i class="fas fa-stethoscope"></i> Doctors</a></li>
+                <li><a href="#"><i class="fas fa-prescription-bottle"></i> Prescriptions</a></li>
+                <li><a href="#"><i class="fas fa-receipt"></i> Billing</a></li>
+                <li><a href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <h1>Our Doctors</h1>
+            </header>
+
+            <section class="doctors-section">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search doctors by name or specialization...">
+                    <i class="fas fa-search"></i>
+                </div>
+
+                <div id="doctorsList" class="doctors-grid">
+                    <p>Loading doctors...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Appointment Modal -->
+    <div id="appointmentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('appointmentModal')">&times;</span>
+            <h2>Book Appointment</h2>
+            <form onsubmit="bookAppointment(event)">
+                <input type="hidden" id="selectedDoctorId">
+                <input type="date" id="appointmentDate" required>
+                <input type="time" id="appointmentTime" required>
+                <textarea id="appointmentReason" placeholder="Reason for appointment" required></textarea>
+                <button type="submit" class="btn btn-primary">Book Appointment</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        async function loadDoctors() {
+            try {
+                const response = await fetch('/api/doctors');
+                const doctors = await response.json();
+                
+                const doctorsList = document.getElementById('doctorsList');
+                doctorsList.innerHTML = '';
+                
+                if (doctors.length === 0) {
+                    doctorsList.innerHTML = '<p>No doctors found</p>';
+                    return;
+                }
+                
+                doctors.forEach(doctor => {
+                    const card = document.createElement('div');
+                    card.className = 'doctor-card';
+                    card.innerHTML = `
+                        <div class="doctor-avatar">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <h3>${doctor.name}</h3>
+                        <p class="specialization">${doctor.specialization}</p>
+                        <p class="phone"><i class="fas fa-phone"></i> ${doctor.phone}</p>
+                        <div class="availability ${doctor.available ? 'available' : 'unavailable'}">
+                            ${doctor.available ? '<i class="fas fa-check-circle"></i> Available' : '<i class="fas fa-times-circle"></i> Unavailable'}
+                        </div>
+                        <button class="btn btn-primary" ${!doctor.available ? 'disabled' : ''} onclick="openAppointmentModal(${doctor.id})">
+                            Book Appointment
+                        </button>
+                    `;
+                    doctorsList.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading doctors:', error);
+            }
+        }
+
+        function openAppointmentModal(doctorId) {
+            document.getElementById('selectedDoctorId').value = doctorId;
+            document.getElementById('appointmentModal').style.display = 'block';
+        }
+
+        async function bookAppointment(event) {
+            event.preventDefault();
+            
+            const doctorId = document.getElementById('selectedDoctorId').value;
+            const date = document.getElementById('appointmentDate').value;
+            const time = document.getElementById('appointmentTime').value;
+            const reason = document.getElementById('appointmentReason').value;
+            
+            const appointmentDate = new Date(`${date}T${time}`).toISOString();
+            
+            try {
+                const response = await fetch('/api/appointments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        doctor_id: parseInt(doctorId),
+                        patient_id: 1,
+                        appointment_date: appointmentDate,
+                        reason: reason
+                    })
+                });
+                
+                if (response.ok) {
+                    alert('Appointment booked successfully!');
+                    closeModal('appointmentModal');
+                } else {
+                    alert('Failed to book appointment');
+                }
+            } catch (error) {
+                console.error('Error booking appointment:', error);
+            }
+        }
+
+        // Search functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDoctors();
+            
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const cards = document.querySelectorAll('.doctor-card');
+                
+                cards.forEach(card => {
+                    const name = card.querySelector('h3').textContent.toLowerCase();
+                    const spec = card.querySelector('.specialization').textContent.toLowerCase();
+                    
+                    if (name.includes(query) || spec.includes(query)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
