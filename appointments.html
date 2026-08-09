@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments - MediCare</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-hospital-user"></i>
+                <span>MediCare</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="/dashboard"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="/appointments" class="active"><i class="fas fa-calendar"></i> Appointments</a></li>
+                <li><a href="/doctors"><i class="fas fa-stethoscope"></i> Doctors</a></li>
+                <li><a href="#"><i class="fas fa-prescription-bottle"></i> Prescriptions</a></li>
+                <li><a href="#"><i class="fas fa-receipt"></i> Billing</a></li>
+                <li><a href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <h1>Your Appointments</h1>
+                <button class="btn btn-primary" onclick="window.location.href='/doctors'">
+                    <i class="fas fa-plus"></i> Book New Appointment
+                </button>
+            </header>
+
+            <section class="appointments-section">
+                <div class="filter-bar">
+                    <button class="filter-btn active" onclick="filterAppointments('all')">All</button>
+                    <button class="filter-btn" onclick="filterAppointments('scheduled')">Scheduled</button>
+                    <button class="filter-btn" onclick="filterAppointments('completed')">Completed</button>
+                    <button class="filter-btn" onclick="filterAppointments('cancelled')">Cancelled</button>
+                </div>
+
+                <div id="appointmentsList" class="appointments-list">
+                    <p>Loading appointments...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        let allAppointments = [];
+
+        async function loadAppointments() {
+            try {
+                const patientId = localStorage.getItem('patientId') || 1;
+                const response = await fetch(`/api/appointments/${patientId}`);
+                allAppointments = await response.json();
+                displayAppointments(allAppointments);
+            } catch (error) {
+                console.error('Error loading appointments:', error);
+            }
+        }
+
+        function displayAppointments(appointments) {
+            const list = document.getElementById('appointmentsList');
+            list.innerHTML = '';
+            
+            if (appointments.length === 0) {
+                list.innerHTML = '<p class="no-data">No appointments found</p>';
+                return;
+            }
+            
+            appointments.forEach(apt => {
+                const date = new Date(apt.date);
+                const appointmentCard = document.createElement('div');
+                appointmentCard.className = `appointment-item status-${apt.status}`;
+                appointmentCard.innerHTML = `
+                    <div class="appointment-header">
+                        <h3>${apt.doctor}</h3>
+                        <span class="status-badge ${apt.status}">${apt.status}</span>
+                    </div>
+                    <div class="appointment-details">
+                        <p><i class="fas fa-calendar"></i> ${date.toLocaleDateString()}</p>
+                        <p><i class="fas fa-clock"></i> ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                        <p><i class="fas fa-stethoscope"></i> ${apt.reason}</p>
+                    </div>
+                    <div class="appointment-actions">
+                        <button class="btn btn-small btn-outline">Reschedule</button>
+                        <button class="btn btn-small btn-danger">Cancel</button>
+                    </div>
+                `;
+                list.appendChild(appointmentCard);
+            });
+        }
+
+        function filterAppointments(status) {
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (status === 'all') {
+                displayAppointments(allAppointments);
+            } else {
+                const filtered = allAppointments.filter(apt => apt.status === status);
+                displayAppointments(filtered);
+            }
+        }
+
+        window.addEventListener('load', loadAppointments);
+    </script>
+</body>
+</html>
