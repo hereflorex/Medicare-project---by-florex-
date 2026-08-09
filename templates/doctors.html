@@ -1,14 +1,35 @@
 {% extends "base.html" %}
-{% block title %}Medical Specialists{% endblock %}
+{% block title %}Our Specialists{% endblock %}
 {% block content %}
-<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:1.5rem;">
-    {% for doctor in doctors %}
-    <div class="card" style="text-align:center">
-        <i class="fas fa-user-md" style="font-size:3.5rem; color:var(--primary); margin-bottom:1rem;"></i>
-        <h3>Dr. {{ doctor.name }}</h3>
-        <p style="color:var(--primary); font-weight:500">{{ doctor.specialization }}</p>
-        <button class="btn btn-primary" onclick="bookAppointment({{ doctor.id }})" style="width:100%; margin-top:1.5rem">Book Now</button>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+    {% for doc in doctors %}
+    <div class="card" style="text-align:center;">
+        <div style="width:80px; height:80px; background:#eff6ff; border-radius:50%; margin:0 auto 15px; display:flex; align-items:center; justify-content:center;">
+            <i class="fas fa-user-md" style="font-size:40px; color:#2563eb;"></i>
+        </div>
+        <h3>{{ doc.name }}</h3>
+        <p style="color:#2563eb; font-weight:600;">{{ doc.spec }}</p>
+        <button class="btn btn-primary" style="width:100%; margin-top:15px;" 
+                onclick="bookNow('{{ doc.name }}')">Book Appointment</button>
     </div>
     {% endfor %}
 </div>
+
+<script>
+async function bookNow(docName) {
+    const date = prompt("Enter Preferred Date (YYYY-MM-DD):");
+    const reason = prompt("Enter Reason for Visit:");
+    if(!date || !reason) return;
+
+    const res = await fetch('/api/book', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({doctor_name: docName, date, reason})
+    });
+    if(res.ok) {
+        alert("Appointment Scheduled with " + docName);
+        window.location.href = '/appointments';
+    }
+}
+</script>
 {% endblock %}
