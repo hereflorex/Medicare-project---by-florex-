@@ -1,60 +1,112 @@
+// ============================================================
+// MediCare - Global JavaScript
+// ============================================================
+
 // Global variables
 let userType = null;
 let userId = null;
 
 
-// ================================
-// Show Login Modal
-// ================================
+// ============================================================
+// SHOW LOGIN MODAL
+// ============================================================
+
 function showLoginModal(type) {
+
     userType = type;
 
     const modal = document.getElementById('loginModal');
+    const loginTitle = document.getElementById('loginTitle');
 
     if (!modal) {
         console.error('loginModal not found');
         return;
     }
 
+    // Set login title according to user type
+    if (loginTitle) {
+
+        if (type === 'doctor') {
+            loginTitle.textContent = 'Doctor Login';
+        } else {
+            loginTitle.textContent = 'Patient Login';
+        }
+
+    }
+
     modal.style.display = 'block';
 }
 
 
-// ================================
-// Show Register Modal
-// ================================
+// ============================================================
+// SHOW REGISTER MODAL
+// ============================================================
+
 function showRegisterModal(type) {
+
     userType = type;
 
-    const patientFields = document.getElementById('patientFields');
-    const doctorFields = document.getElementById('doctorFields');
-    const modal = document.getElementById('registerModal');
+    const patientFields =
+        document.getElementById('patientFields');
+
+    const doctorFields =
+        document.getElementById('doctorFields');
+
+    const modal =
+        document.getElementById('registerModal');
+
+    const registerTitle =
+        document.getElementById('registerTitle');
+
 
     if (!patientFields || !doctorFields || !modal) {
-        console.error('Registration modal elements not found');
+
+        console.error(
+            'Registration modal elements not found'
+        );
+
         return;
     }
 
-    patientFields.style.display = type === 'patient' ? 'flex' : 'none';
-    doctorFields.style.display = type === 'doctor' ? 'flex' : 'none';
 
-    if (patientFields.style.display === 'flex') {
-        patientFields.style.flexDirection = 'column';
+    // Change registration title
+    if (registerTitle) {
+
+        if (type === 'doctor') {
+            registerTitle.textContent =
+                'Doctor Registration';
+        } else {
+            registerTitle.textContent =
+                'Patient Registration';
+        }
     }
 
-    if (doctorFields.style.display === 'flex') {
-        doctorFields.style.flexDirection = 'column';
+
+    // Show / hide fields
+    if (type === 'patient') {
+
+        patientFields.style.display = 'block';
+        doctorFields.style.display = 'none';
+
+    } else {
+
+        patientFields.style.display = 'none';
+        doctorFields.style.display = 'block';
     }
+
 
     modal.style.display = 'block';
 }
 
 
-// ================================
-// Close Modal
-// ================================
+// ============================================================
+// CLOSE MODAL
+// ============================================================
+
 function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
+
+    const modal =
+        document.getElementById(modalId);
 
     if (modal) {
         modal.style.display = 'none';
@@ -62,148 +114,566 @@ function closeModal(modalId) {
 }
 
 
-// ================================
-// Handle Login
-// ================================
+// ============================================================
+// HANDLE LOGIN
+// ============================================================
+
 async function handleLogin(event) {
+
     event.preventDefault();
 
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
 
-    try {
-        // Temporary login storage
-        localStorage.setItem('userEmail', email);
-        localStorage.setItem('userType', userType);
+    const emailInput =
+        document.getElementById('loginEmail');
 
-        alert(`Login successful! Welcome ${email}`);
+    const passwordInput =
+        document.getElementById('loginPassword');
 
-        closeModal('loginModal');
 
-        window.location.href = '/dashboard';
+    if (!emailInput || !passwordInput) {
 
-    } catch (error) {
-        alert('Login failed. Please try again.');
-        console.error('Login error:', error);
+        console.error(
+            'Login form fields not found'
+        );
+
+        return;
     }
-}
 
 
-// ================================
-// Handle Registration
-// ================================
-async function handleRegister(event) {
-    event.preventDefault();
+    const email =
+        emailInput.value.trim();
 
-    const name = document.getElementById('regName').value;
-    const email = document.getElementById('regEmail').value;
-    const password = document.getElementById('regPassword').value;
-    const phone = document.getElementById('regPhone').value;
+    const password =
+        passwordInput.value;
 
-    let endpoint;
-    let data;
 
-    if (userType === 'patient') {
+    // Basic validation
+    if (!isValidEmail(email)) {
 
-        const age = document.getElementById('regAge').value;
-        const address = document.getElementById('regAddress').value;
+        alert(
+            'Please enter a valid email address.'
+        );
 
-        endpoint = '/api/patients/register';
-
-        data = {
-            name: name,
-            email: email,
-            password: password,
-            phone: phone,
-            age: parseInt(age),
-            address: address
-        };
-
-    } else {
-
-        const specialization =
-            document.getElementById('regSpecialization').value;
-
-        endpoint = '/api/doctors/register';
-
-        data = {
-            name: name,
-            email: email,
-            password: password,
-            phone: phone,
-            specialization: specialization
-        };
+        return;
     }
+
+
+    if (!password) {
+
+        alert(
+            'Please enter your password.'
+        );
+
+        return;
+    }
+
+
+    // Check selected user type
+    if (
+        userType !== 'patient' &&
+        userType !== 'doctor'
+    ) {
+
+        alert(
+            'Please select Patient or Doctor login.'
+        );
+
+        return;
+    }
+
 
     try {
 
-        const response = await fetch(endpoint, {
-            method: 'POST',
+        /*
+         * Login endpoint
+         *
+         * Patient:
+         * /api/patients/login
+         *
+         * Doctor:
+         * /api/doctors/login
+         */
 
-            headers: {
-                'Content-Type': 'application/json'
-            },
+        const endpoint =
+            userType === 'doctor'
+                ? '/api/doctors/login'
+                : '/api/patients/login';
 
-            body: JSON.stringify(data)
-        });
 
-        const result = await response.json();
+        const response =
+            await fetch(endpoint, {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+
+                    email: email,
+                    password: password
+
+                })
+
+            });
+
+
+        let result = {};
+
+        try {
+
+            result =
+                await response.json();
+
+        } catch (jsonError) {
+
+            console.error(
+                'Invalid JSON response:',
+                jsonError
+            );
+
+        }
+
 
         if (response.ok) {
 
-            localStorage.setItem('userEmail', email);
-            localStorage.setItem('userType', userType);
+            // Save login information
+            localStorage.setItem(
+                'userEmail',
+                email
+            );
 
+            localStorage.setItem(
+                'userType',
+                userType
+            );
+
+
+            // Save returned user ID
             if (result.id) {
+
+                userId =
+                    result.id;
+
                 localStorage.setItem(
                     `${userType}Id`,
                     result.id
                 );
             }
 
-            alert('Registration successful!');
 
-            closeModal('registerModal');
+            // Save user name if backend sends it
+            if (result.name) {
 
-            window.location.href = '/dashboard';
+                localStorage.setItem(
+                    'userName',
+                    result.name
+                );
+            }
+
+
+            alert(
+                `Login successful! Welcome ${result.name || email}`
+            );
+
+
+            closeModal('loginModal');
+
+
+            // Redirect to dashboard
+            window.location.href =
+                '/dashboard';
+
 
         } else {
 
             alert(
                 result.error ||
-                'Registration failed'
+                result.message ||
+                'Invalid email or password.'
             );
+
         }
+
 
     } catch (error) {
 
-        alert(
-            'Registration error. Please try again.'
-        );
-
         console.error(
-            'Register error:',
+            'Login error:',
             error
         );
+
+
+        alert(
+            'Unable to connect to the server. Please try again.'
+        );
+
     }
+
 }
 
 
-// ================================
-// Logout
-// ================================
+// ============================================================
+// HANDLE REGISTRATION
+// ============================================================
+
+async function handleRegister(event) {
+
+    event.preventDefault();
+
+
+    const nameInput =
+        document.getElementById('regName');
+
+    const emailInput =
+        document.getElementById('regEmail');
+
+    const passwordInput =
+        document.getElementById('regPassword');
+
+    const phoneInput =
+        document.getElementById('regPhone');
+
+
+    if (
+        !nameInput ||
+        !emailInput ||
+        !passwordInput ||
+        !phoneInput
+    ) {
+
+        console.error(
+            'Registration form fields not found'
+        );
+
+        return;
+    }
+
+
+    const name =
+        nameInput.value.trim();
+
+    const email =
+        emailInput.value.trim();
+
+    const password =
+        passwordInput.value;
+
+    const phone =
+        phoneInput.value.trim();
+
+
+    // Basic validation
+    if (!name) {
+
+        alert(
+            'Please enter your full name.'
+        );
+
+        return;
+    }
+
+
+    if (!isValidEmail(email)) {
+
+        alert(
+            'Please enter a valid email address.'
+        );
+
+        return;
+    }
+
+
+    if (password.length < 6) {
+
+        alert(
+            'Password must be at least 6 characters.'
+        );
+
+        return;
+    }
+
+
+    if (!isValidPhone(phone)) {
+
+        alert(
+            'Please enter a valid 10-digit phone number.'
+        );
+
+        return;
+    }
+
+
+    let endpoint;
+    let data;
+
+
+    // ========================================================
+    // PATIENT REGISTRATION
+    // ========================================================
+
+    if (userType === 'patient') {
+
+        const ageInput =
+            document.getElementById('regAge');
+
+        const addressInput =
+            document.getElementById('regAddress');
+
+
+        const age =
+            ageInput
+                ? parseInt(ageInput.value)
+                : null;
+
+        const address =
+            addressInput
+                ? addressInput.value.trim()
+                : '';
+
+
+        if (
+            !age ||
+            age < 1 ||
+            age > 120
+        ) {
+
+            alert(
+                'Please enter a valid age.'
+            );
+
+            return;
+        }
+
+
+        if (!address) {
+
+            alert(
+                'Please enter your address.'
+            );
+
+            return;
+        }
+
+
+        endpoint =
+            '/api/patients/register';
+
+
+        data = {
+
+            name: name,
+
+            email: email,
+
+            password: password,
+
+            phone: phone,
+
+            age: age,
+
+            address: address
+
+        };
+
+
+    // ========================================================
+    // DOCTOR REGISTRATION
+    // ========================================================
+
+    } else if (userType === 'doctor') {
+
+        const specializationInput =
+            document.getElementById(
+                'regSpecialization'
+            );
+
+
+        const specialization =
+            specializationInput
+                ? specializationInput.value.trim()
+                : '';
+
+
+        if (!specialization) {
+
+            alert(
+                'Please enter your specialization.'
+            );
+
+            return;
+        }
+
+
+        endpoint =
+            '/api/doctors/register';
+
+
+        data = {
+
+            name: name,
+
+            email: email,
+
+            password: password,
+
+            phone: phone,
+
+            specialization:
+                specialization
+
+        };
+
+
+    } else {
+
+        alert(
+            'Please select Patient or Doctor registration.'
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(endpoint, {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type':
+                        'application/json'
+                },
+
+                body:
+                    JSON.stringify(data)
+
+            });
+
+
+        let result = {};
+
+        try {
+
+            result =
+                await response.json();
+
+        } catch (jsonError) {
+
+            console.error(
+                'Invalid JSON response:',
+                jsonError
+            );
+
+        }
+
+
+        if (response.ok) {
+
+            // Save user information
+            localStorage.setItem(
+                'userEmail',
+                email
+            );
+
+            localStorage.setItem(
+                'userType',
+                userType
+            );
+
+
+            // Save ID
+            if (result.id) {
+
+                userId =
+                    result.id;
+
+                localStorage.setItem(
+                    `${userType}Id`,
+                    result.id
+                );
+            }
+
+
+            // Save name
+            localStorage.setItem(
+                'userName',
+                name
+            );
+
+
+            alert(
+                result.message ||
+                'Registration successful!'
+            );
+
+
+            closeModal(
+                'registerModal'
+            );
+
+
+            // Redirect
+            window.location.href =
+                '/dashboard';
+
+
+        } else {
+
+            alert(
+                result.error ||
+                result.message ||
+                'Registration failed.'
+            );
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            'Registration error:',
+            error
+        );
+
+
+        alert(
+            'Unable to connect to the server. Please try again.'
+        );
+
+    }
+
+}
+// ============================================================
+// LOGOUT
+// ============================================================
+
 function logout() {
 
-    localStorage.clear();
+    // Remove saved login information
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('userType');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('patientId');
+    localStorage.removeItem('doctorId');
 
+    // Reset global variables
+    userType = null;
+    userId = null;
+
+    // Go back to home page
     window.location.href = '/';
 }
 
 
-// ================================
-// Close modal when clicking outside
-// ================================
-window.onclick = function(event) {
+// ============================================================
+// CLOSE MODAL WHEN CLICKING OUTSIDE
+// ============================================================
+
+window.addEventListener('click', function (event) {
 
     const loginModal =
         document.getElementById('loginModal');
@@ -215,309 +685,629 @@ window.onclick = function(event) {
         document.getElementById('appointmentModal');
 
 
+    // Login modal
     if (
         loginModal &&
         event.target === loginModal
     ) {
+
         loginModal.style.display = 'none';
     }
 
 
+    // Register modal
     if (
         registerModal &&
         event.target === registerModal
     ) {
+
         registerModal.style.display = 'none';
     }
 
 
+    // Appointment modal
     if (
         appointmentModal &&
         event.target === appointmentModal
     ) {
+
         appointmentModal.style.display = 'none';
     }
-};
+
+});
 
 
-// ================================
-// Load User Info
-// ================================
+// ============================================================
+// ESC KEY - CLOSE MODALS
+// ============================================================
+
+document.addEventListener('keydown', function (event) {
+
+    if (event.key !== 'Escape') {
+        return;
+    }
+
+
+    const modals =
+        document.querySelectorAll('.modal');
+
+
+    modals.forEach(function (modal) {
+
+        modal.style.display = 'none';
+
+    });
+
+});
+
+
+// ============================================================
+// LOAD USER INFO
+// ============================================================
+
 function loadUserInfo() {
 
     const userEmail =
         localStorage.getItem('userEmail');
+
+    const savedUserName =
+        localStorage.getItem('userName');
+
+    const userTypeValue =
+        localStorage.getItem('userType');
+
 
     const userNameElement =
         document.getElementById('userName');
 
 
     if (
-        userEmail &&
-        userNameElement
+        !userNameElement
     ) {
+        return;
+    }
+
+
+    // Use saved name first
+    if (savedUserName) {
+
+        userNameElement.textContent =
+            savedUserName;
+
+        return;
+    }
+
+
+    // Otherwise use email username
+    if (userEmail) {
 
         const name =
-            userEmail.split('@')[0];
+            userEmail
+                .split('@')[0];
+
 
         userNameElement.textContent =
             name.charAt(0).toUpperCase() +
             name.slice(1);
+
+        return;
     }
+
+
+    // Default
+    userNameElement.textContent =
+        userTypeValue === 'doctor'
+            ? 'Doctor'
+            : 'Patient';
 }
 
 
-// ================================
-// Initialize on page load
-// ================================
-document.addEventListener(
-    'DOMContentLoaded',
-    () => {
+// ============================================================
+// CHECK LOGIN STATUS
+// ============================================================
 
-        console.log(
-            'MediCare JavaScript loaded successfully'
+function isUserLoggedIn() {
+
+    const email =
+        localStorage.getItem('userEmail');
+
+    const type =
+        localStorage.getItem('userType');
+
+
+    return Boolean(
+        email &&
+        (
+            type === 'patient' ||
+            type === 'doctor'
+        )
+    );
+}
+
+
+// ============================================================
+// PROTECT PRIVATE PAGES
+// ============================================================
+
+function protectPage() {
+
+    const currentPath =
+        window.location.pathname;
+
+
+    const protectedPages = [
+
+        '/dashboard',
+
+        '/doctors',
+
+        '/appointments'
+
+    ];
+
+
+    if (
+        protectedPages.includes(currentPath) &&
+        !isUserLoggedIn()
+    ) {
+
+        console.warn(
+            'User is not logged in. Redirecting...'
         );
 
-        loadUserInfo();
 
+        window.location.href =
+            '/';
 
-        const userEmail =
-            localStorage.getItem('userEmail');
-
-        const currentPath =
-            window.location.pathname;
-
-
-        if (
-            !userEmail &&
-            (
-                currentPath === '/dashboard' ||
-                currentPath === '/doctors' ||
-                currentPath === '/appointments'
-            )
-        ) {
-
-            window.location.href = '/';
-        }
     }
-);
+
+}
 
 
-// ================================
-// Smooth Scroll
-// ================================
-document
-    .querySelectorAll('a[href^="#"]')
-    .forEach(anchor => {
+// ============================================================
+// SMOOTH SCROLL
+// ============================================================
+
+function initializeSmoothScroll() {
+
+    const anchors =
+        document.querySelectorAll(
+            'a[href^="#"]'
+        );
+
+
+    anchors.forEach(function (anchor) {
 
         anchor.addEventListener(
             'click',
-            function(e) {
+            function (event) {
 
-                e.preventDefault();
+                const href =
+                    this.getAttribute('href');
+
+
+                // Ignore empty #
+                if (
+                    !href ||
+                    href === '#'
+                ) {
+
+                    return;
+                }
+
 
                 const target =
                     document.querySelector(
-                        this.getAttribute('href')
+                        href
                     );
+
 
                 if (target) {
 
+                    event.preventDefault();
+
+
                     target.scrollIntoView({
-                        behavior: 'smooth'
+
+                        behavior: 'smooth',
+
+                        block: 'start'
+
                     });
+
                 }
+
             }
         );
+
+    });
+
+}
+
+
+// ============================================================
+// ACTIVE NAVBAR ON SCROLL
+// ============================================================
+
+function updateActiveNavbar() {
+
+    const sections =
+        document.querySelectorAll(
+            'section[id]'
+        );
+
+
+    const navLinks =
+        document.querySelectorAll(
+            '.nav-menu a'
+        );
+
+
+    if (
+        sections.length === 0 ||
+        navLinks.length === 0
+    ) {
+
+        return;
+    }
+
+
+    let currentSection = '';
+
+
+    sections.forEach(function (section) {
+
+        const sectionTop =
+            section.offsetTop;
+
+
+        const sectionHeight =
+            section.offsetHeight;
+
+
+        if (
+            window.scrollY >=
+            sectionTop - 200
+        ) {
+
+            currentSection =
+                section.getAttribute('id');
+
+        }
+
     });
 
 
-// ================================
-// Active Navbar on Scroll
-// ================================
-window.addEventListener(
-    'scroll',
-    () => {
+    navLinks.forEach(function (link) {
 
-        const sections =
-            document.querySelectorAll(
-                'section[id]'
-            );
-
-        let current = '';
+        link.classList.remove('active');
 
 
-        sections.forEach(section => {
-
-            const sectionTop =
-                section.offsetTop;
+        const href =
+            link.getAttribute('href');
 
 
-            if (
-                window.pageYOffset >=
-                sectionTop - 200
-            ) {
+        if (
+            href &&
+            href.startsWith('#') &&
+            href.substring(1) ===
+                currentSection
+        ) {
 
-                current =
-                    section.getAttribute('id');
-            }
-        });
+            link.classList.add('active');
 
+        }
 
-        document
-            .querySelectorAll('.nav-menu a')
-            .forEach(link => {
+    });
 
-                link.classList.remove('active');
+}
 
 
-                if (
-                    link
-                        .getAttribute('href')
-                        .slice(1) === current
-                ) {
+// ============================================================
+// FORMAT DATE
+// ============================================================
 
-                    link.classList.add('active');
-                }
-            });
-    }
-);
-
-
-// ================================
-// Format Date
-// ================================
 function formatDate(dateString) {
 
-    const options = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    };
+    if (!dateString) {
+        return '';
+    }
 
-    return new Date(
-        dateString
-    ).toLocaleDateString(
+
+    const date =
+        new Date(dateString);
+
+
+    if (isNaN(date.getTime())) {
+        return '';
+    }
+
+
+    return date.toLocaleDateString(
         undefined,
-        options
+        {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        }
     );
+
 }
 
 
-// ================================
-// Format Time
-// ================================
+// ============================================================
+// FORMAT TIME
+// ============================================================
+
 function formatTime(dateString) {
 
-    const options = {
-        hour: '2-digit',
-        minute: '2-digit'
-    };
+    if (!dateString) {
+        return '';
+    }
 
-    return new Date(
-        dateString
-    ).toLocaleTimeString(
+
+    const date =
+        new Date(dateString);
+
+
+    if (isNaN(date.getTime())) {
+        return '';
+    }
+
+
+    return date.toLocaleTimeString(
         undefined,
-        options
+        {
+            hour: '2-digit',
+            minute: '2-digit'
+        }
     );
+
 }
 
 
-// ================================
-// Toast Notification
-// ================================
+// ============================================================
+// TOAST NOTIFICATION
+// ============================================================
+
 function showToast(
     message,
     type = 'info'
 ) {
 
+    // Remove old toast if one exists
+    const oldToast =
+        document.querySelector('.toast');
+
+
+    if (oldToast) {
+        oldToast.remove();
+    }
+
+
     const toast =
         document.createElement('div');
+
 
     toast.className =
         `toast toast-${type}`;
 
+
     toast.textContent =
         message;
+
 
     document.body.appendChild(
         toast
     );
 
 
-    setTimeout(
-        () => {
+    // Remove after 3 seconds
+    setTimeout(function () {
+
+        if (toast) {
             toast.remove();
-        },
-        3000
-    );
+        }
+
+    }, 3000);
+
 }
 
 
-// ================================
-// Validate Email
-// ================================
+// ============================================================
+// EMAIL VALIDATION
+// ============================================================
+
 function isValidEmail(email) {
 
-    const re =
+    if (!email) {
+        return false;
+    }
+
+
+    const emailPattern =
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    return re.test(email);
+
+    return emailPattern.test(
+        email.trim()
+    );
+
 }
 
 
-// ================================
-// Validate Phone
-// ================================
+// ============================================================
+// PHONE VALIDATION
+// ============================================================
+
 function isValidPhone(phone) {
 
-    const re =
-        /^\d{10}$/;
+    if (!phone) {
+        return false;
+    }
 
-    return re.test(phone);
+
+    // Indian 10-digit mobile number
+    const phonePattern =
+        /^[6-9]\d{9}$/;
+
+
+    return phonePattern.test(
+        phone.trim()
+    );
+
 }
 
 
-// ================================
-// Form Validation
-// ================================
-document.addEventListener(
-    'DOMContentLoaded',
-    () => {
+// ============================================================
+// FORM VALIDATION
+// ============================================================
 
-        const forms =
-            document.querySelectorAll('form');
+function initializeFormValidation() {
 
-
-        forms.forEach(form => {
-
-            form.addEventListener(
-                'submit',
-                (e) => {
-
-                    const emailInputs =
-                        form.querySelectorAll(
-                            'input[type="email"]'
-                        );
+    const forms =
+        document.querySelectorAll(
+            'form'
+        );
 
 
-                    emailInputs.forEach(input => {
+    forms.forEach(function (form) {
+
+        form.addEventListener(
+            'submit',
+            function (event) {
+
+                const emailInputs =
+                    form.querySelectorAll(
+                        'input[type="email"]'
+                    );
+
+
+                let valid = true;
+
+
+                emailInputs.forEach(
+                    function (input) {
 
                         if (
+                            input.value.trim() &&
                             !isValidEmail(
                                 input.value
                             )
                         ) {
 
-                            e.preventDefault();
+                            valid = false;
+
+                            input.focus();
 
                             alert(
-                                'Please enter a valid email address'
+                                'Please enter a valid email address.'
                             );
+
                         }
-                    });
+
+                    }
+                );
+
+
+                const phoneInputs =
+                    form.querySelectorAll(
+                        'input[type="tel"]'
+                    );
+
+
+                phoneInputs.forEach(
+                    function (input) {
+
+                        if (
+                            input.value.trim() &&
+                            !isValidPhone(
+                                input.value
+                            )
+                        ) {
+
+                            valid = false;
+
+                            input.focus();
+
+                            alert(
+                                'Please enter a valid 10-digit phone number.'
+                            );
+
+                        }
+
+                    }
+                );
+
+
+                if (!valid) {
+
+                    event.preventDefault();
+
                 }
-            );
-        });
+
+            }
+        );
+
+    });
+
+}
+
+
+// ============================================================
+// PAGE INITIALIZATION
+// ============================================================
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+
+        console.log(
+            'MediCare JavaScript loaded successfully'
+        );
+
+
+        // Load logged-in user information
+        loadUserInfo();
+
+
+        // Protect dashboard pages
+        protectPage();
+
+
+        // Enable smooth scrolling
+        initializeSmoothScroll();
+
+
+        // Enable form validation
+        initializeFormValidation();
+
+
+        // Initial navbar state
+        updateActiveNavbar();
+
     }
+);
+
+
+// ============================================================
+// SCROLL EVENT
+// ============================================================
+
+window.addEventListener(
+    'scroll',
+    function () {
+
+        updateActiveNavbar();
+
+    }
+);
+
+
+// ============================================================
+// CONSOLE MESSAGE
+// ============================================================
+
+console.log(
+    'MediCare script.js initialized.'
 );
