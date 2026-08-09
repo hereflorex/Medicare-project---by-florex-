@@ -1,79 +1,14 @@
 {% extends "base.html" %}
-
-{% block title %}Find a Specialist{% endblock %}
-
+{% block title %}Medical Specialists{% endblock %}
 {% block content %}
-<div class="doctors-section">
-    <div class="card" style="margin-bottom: 2rem;">
-        <input type="text" id="docSearch" placeholder="Search by name or specialty..." 
-               style="width: 100%; padding: 0.8rem; border-radius: 10px; border: 1px solid #ddd;">
+<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:1.5rem;">
+    {% for doctor in doctors %}
+    <div class="card" style="text-align:center">
+        <i class="fas fa-user-md" style="font-size:3.5rem; color:var(--primary); margin-bottom:1rem;"></i>
+        <h3>Dr. {{ doctor.name }}</h3>
+        <p style="color:var(--primary); font-weight:500">{{ doctor.specialization }}</p>
+        <button class="btn btn-primary" onclick="bookAppointment({{ doctor.id }})" style="width:100%; margin-top:1.5rem">Book Now</button>
     </div>
-
-    <div class="doctors-grid">
-        {% for doctor in doctors %}
-        <div class="card doctor-card">
-            <div class="avatar" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;">
-                <i class="fas fa-user-md"></i>
-            </div>
-            <h3>Dr. {{ doctor.name }}</h3>
-            <p class="specialty" style="color: var(--primary); font-weight: 600;">{{ doctor.specialization }}</p>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">Available: Mon - Fri</p>
-            <button class="btn btn-primary" onclick="bookAppointment({{ doctor.id }})" style="width: 100%; margin-top: 1rem;">
-                Book Appointment
-            </button>
-        </div>
-        {% endfor %}
-    </div>
+    {% endfor %}
 </div>
-{% endblock %}            const time = document.getElementById('appointmentTime').value;
-            const reason = document.getElementById('appointmentReason').value;
-            
-            const appointmentDate = new Date(`${date}T${time}`).toISOString();
-            
-            try {
-                const response = await fetch('/api/appointments', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        doctor_id: parseInt(doctorId),
-                        patient_id: 1,
-                        appointment_date: appointmentDate,
-                        reason: reason
-                    })
-                });
-                
-                if (response.ok) {
-                    alert('Appointment booked successfully!');
-                    closeModal('appointmentModal');
-                } else {
-                    alert('Failed to book appointment');
-                }
-            } catch (error) {
-                console.error('Error booking appointment:', error);
-            }
-        }
-
-        // Search functionality
-        document.addEventListener('DOMContentLoaded', () => {
-            loadDoctors();
-            
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase();
-                const cards = document.querySelectorAll('.doctor-card');
-                
-                cards.forEach(card => {
-                    const name = card.querySelector('h3').textContent.toLowerCase();
-                    const spec = card.querySelector('.specialization').textContent.toLowerCase();
-                    
-                    if (name.includes(query) || spec.includes(query)) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            });
-        });
-    </script>
-</body>
-</html>
+{% endblock %}
