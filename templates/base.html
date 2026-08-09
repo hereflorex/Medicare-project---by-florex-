@@ -1,27 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <title>MediCare - Professional</title>
+    <title>MediCare - Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="app-container">
+    <div class="app-layout">
         <aside class="sidebar">
-            <h2 style="color:var(--primary)"><i class="fas fa-plus-square"></i> MediCare</h2>
-            <nav style="margin-top: 2rem;">
-                <a href="/dashboard" class="btn" style="display:block; text-align:left;"><i class="fas fa-home"></i> Dashboard</a>
-                <a href="/doctors" class="btn" style="display:block; text-align:left;"><i class="fas fa-user-md"></i> Doctors</a>
-                <a href="/appointments" class="btn" style="display:block; text-align:left;"><i class="fas fa-calendar-alt"></i> My Bookings</a>
-                <a href="/logout" class="btn" style="display:block; text-align:left; color:red; margin-top:5rem;"><i class="fas fa-sign-out-alt"></i> Logout</a>
-            </nav>
+            <div class="logo" style="margin-bottom: 3rem;"><i class="fas fa-heartbeat"></i> MediCare</div>
+            <a href="/dashboard"><i class="fas fa-th-large"></i> Dashboard</a>
+            <a href="/doctors"><i class="fas fa-user-md"></i> Doctors</a>
+            <a href="/appointments"><i class="fas fa-calendar-check"></i> Appointments</a>
+            <a href="/about"><i class="fas fa-info-circle"></i> About Us</a>
+            <a href="/logout" style="margin-top: 10rem; color: #ef4444;"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </aside>
-        
-        <main class="main-content">
-            <header style="display:flex; justify-content:space-between; margin-bottom:2rem;">
+
+        <main class="content-area">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:3rem;">
                 <h1>{% block title %}{% endblock %}</h1>
-                <div class="user-info">Welcome, <strong>{{ session['user_name'] }}</strong></div>
-            </header>
+                <div class="card" style="padding: 10px 20px; border-radius: 12px; display:flex; align-items:center; gap:10px">
+                    <i class="fas fa-user-circle" style="font-size: 1.5rem; color: var(--primary);"></i>
+                    <strong>{{ session['user_name'] }}</strong>
+                </div>
+            </div>
             {% block content %}{% endblock %}
         </main>
     </div>
