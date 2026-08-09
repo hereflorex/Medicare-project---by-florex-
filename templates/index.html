@@ -2,53 +2,130 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MediCare | Modern Healthcare</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare | Health Portal</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* CSS directly here to fix UI mess */
+        :root { --primary: #2563eb; --bg: #f8fafc; --text: #1e293b; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg); color: var(--text); }
+
+        .hero { min-height: 100vh; padding: 20px 8%; background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%); }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; }
+        .logo { font-size: 24px; font-weight: 700; color: var(--primary); }
+
+        .content { margin-top: 80px; max-width: 600px; animation: fadeInUp 0.8s ease; }
+        h1 { font-size: 56px; line-height: 1.1; margin-bottom: 20px; }
+        p { font-size: 18px; color: #64748b; margin-bottom: 30px; }
+
+        .btn { padding: 12px 28px; border-radius: 10px; border: none; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 10px 15px -3px rgba(37,99,235,0.3); }
+        .btn-primary:hover { transform: translateY(-3px); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); margin-left: 10px; }
+
+        /* Modal Style */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 40px; border-radius: 20px; width: 100%; max-width: 400px; position: relative; }
+        .close-btn { position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 20px; color: #94a3b8; }
+
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e2e8f0; border-radius: 10px; outline: none; }
+        
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
 <body>
-    <div class="hero">
-        <nav class="animate">
-            <div class="logo"><i class="fas fa-hand-holding-medical"></i> MediCare</div>
-            <div style="display:flex; gap:12px">
-                <button class="btn" onclick="openModal('loginModal')">Login</button>
-                <button class="btn btn-primary" onclick="openModal('regModal')">Join Now</button>
-            </div>
-        </nav>
 
-        <div class="animate" style="max-width: 650px; margin-top: 6rem;">
-            <h1 style="font-size: 3.8rem; line-height: 1.1; margin-bottom: 1.5rem;">Better Care for a <span style="color:var(--primary)">Better Life.</span></h1>
-            <p style="color:var(--text-gray); font-size: 1.2rem; margin-bottom: 2.5rem;">Access top-tier medical assistance, book appointments instantly, and manage your health records in one secure place.</p>
-            <button class="btn btn-primary" onclick="openModal('regModal')" style="padding: 16px 45px; font-size: 1.1rem;">Create Free Account</button>
+<div class="hero">
+    <nav>
+        <div class="logo"><i class="fas fa-hand-holding-medical"></i> MediCare</div>
+        <div>
+            <button class="btn btn-outline" onclick="toggleModal('loginModal', true)">Login</button>
         </div>
-    </div>
+    </nav>
 
-    <!-- Modals -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <h2 style="margin-bottom: 1rem;">Login</h2>
-            <input type="email" id="loginEmail" placeholder="Email Address">
-            <input type="password" id="loginPassword" placeholder="Password">
-            <button class="btn btn-primary" onclick="handleLogin()" style="width:100%">Sign In</button>
-            <p onclick="closeModal('loginModal')" style="text-align:center; margin-top:1rem; cursor:pointer; font-size: 0.9rem; color:var(--text-gray)">Close</p>
-        </div>
+    <div class="content">
+        <h1>Your Health, <br><span style="color:var(--primary)">Our Responsibility.</span></h1>
+        <p>Book appointments with the best doctors and manage your medical history effortlessly.</p>
+        <button class="btn btn-primary" onclick="toggleModal('regModal', true)">Get Started Free</button>
     </div>
+</div>
 
-    <div id="regModal" class="modal">
-        <div class="modal-content">
-            <h2 style="margin-bottom: 1rem;">Register</h2>
-            <input type="text" id="regName" placeholder="Full Name">
-            <input type="email" id="regEmail" placeholder="Email Address">
-            <input type="password" id="regPassword" placeholder="Password">
-            <select id="regRole">
-                <option value="patient">I'm a Patient</option>
-                <option value="doctor">I'm a Doctor</option>
-            </select>
-            <button class="btn btn-primary" onclick="handleRegister()" style="width:100%">Create Account</button>
-            <p onclick="closeModal('regModal')" style="text-align:center; margin-top:1rem; cursor:pointer; font-size: 0.9rem; color:var(--text-gray)">Close</p>
-        </div>
+<!-- Login Modal -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="toggleModal('loginModal', false)">&times;</span>
+        <h2>Welcome Back</h2>
+        <input type="email" id="loginEmail" placeholder="Email Address">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <button class="btn btn-primary" style="width:100%" onclick="loginUser()">Login Now</button>
     </div>
+</div>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<!-- Register Modal -->
+<div id="regModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="toggleModal('regModal', false)">&times;</span>
+        <h2>Create Account</h2>
+        <input type="text" id="regName" placeholder="Full Name">
+        <input type="email" id="regEmail" placeholder="Email Address">
+        <input type="password" id="regPassword" placeholder="Password">
+        <select id="regRole">
+            <option value="patient">I'm a Patient</option>
+            <option value="doctor">I'm a Doctor</option>
+        </select>
+        <button class="btn btn-primary" style="width:100%" onclick="registerUser()">Register</button>
+    </div>
+</div>
+
+<script>
+    // Inline JS to fix "Buttons Not Working"
+    function toggleModal(id, show) {
+        document.getElementById(id).style.display = show ? 'flex' : 'none';
+    }
+
+    async function loginUser() {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+
+        try {
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            if (data.success) {
+                window.location.href = '/dashboard';
+            } else {
+                alert(data.error);
+            }
+        } catch (e) { alert("Server error!"); }
+    }
+
+    async function registerUser() {
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+        const role = document.getElementById('regRole').value;
+
+        try {
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password, role })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert("Success! Now please login.");
+                location.reload();
+            } else { alert(data.error); }
+        } catch (e) { alert("Error connecting to server"); }
+    }
+</script>
+
 </body>
 </html>
