@@ -46,6 +46,7 @@
   </div>
 {% else %}
   {% block public_content %}{% endblock %}
+  {% block content %}{% endblock %}
 {% endif %}
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 {% block page_scripts %}{% endblock %}
