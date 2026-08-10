@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}About the Developers — MediCare{% endblock %}
+{% block crumb %}About Project{% endblock %}
+
+{% macro about_body() %}
+<div class="public-about-shell">
+  <section class="about-dev-hero">
+    <div class="about-dev-copy">
+      <span class="eyebrow"><i class="fa-solid fa-code"></i> BUILT BY STUDENTS</span>
+      <h1>Meet the people<br><em>behind MediCare.</em></h1>
+      <p>MediCare is our BCA project — designed, developed and tested by two students with a focus on practical full-stack development, clean UI and a working healthcare workflow.</p>
+      <div class="about-dev-meta">
+        <span><i class="fa-solid fa-graduation-cap"></i> BCA Project</span>
+        <span><i class="fa-solid fa-location-dot"></i> Modasa, Gujarat</span>
+        <span><i class="fa-solid fa-calendar"></i> 2026</span>
+      </div>
+    </div>
+    <div class="about-dev-orbit" aria-hidden="true">
+      <span class="orbit-ring ring-one"></span><span class="orbit-ring ring-two"></span>
+      <span class="orbit-dot dot-one"></span><span class="orbit-dot dot-two"></span>
+      <div class="about-dev-center"><i class="fa-solid fa-code"></i></div>
+    </div>
+  </section>
+
+  <section class="developers-section">
+    <div class="about-section-head">
+      <div><span class="eyebrow">THE DEVELOPERS</span><h2>Two minds. One project.</h2></div>
+      <p>Our roles were different, but the goal was the same: build a complete project that is easy to use, understand and demonstrate.</p>
+    </div>
+
+    <div class="developer-grid">
+      <article class="developer-card developer-featured">
+        <div class="developer-photo-wrap">
+          <img class="developer-photo" src="{{ url_for('static', filename='img/dhvanit.jpg') }}" alt="Dhvanit">
+          <span class="developer-online"><i class="fa-solid fa-circle"></i> Developer</span>
+        </div>
+        <div class="developer-info">
+          <span class="developer-role">DEVELOPER · UI / FULL-STACK</span>
+          <h3>DHVANIT</h3><p class="developer-number">Roll No. 198</p>
+          <p>Worked on the interface, responsive design, project structure and full-stack integration, with a focus on making the system clean, modern and presentation-ready.</p>
+          <div class="developer-links">
+            <a class="dev-link github" href="https://github.com/hereflorex" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> @hereflorex</a>
+            <a class="dev-link telegram" href="https://t.me/fizzxo" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-telegram"></i> @fizzxo</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="developer-card">
+        <div class="developer-avatar tirth-avatar">T</div>
+        <div class="developer-info">
+          <span class="developer-role">DEVELOPER · BACKEND / LOGIC</span>
+          <h3>TIRTH</h3><p class="developer-number">Roll No. 123</p>
+          <p>Contributed to the backend workflow, application logic and implementation, helping connect the healthcare modules into one usable application.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="project-strip">
+    <div class="project-strip-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+    <div><span class="eyebrow">THE PROJECT</span><h2>MediCare — Hospital Management System</h2><p>Authentication, role-based dashboards, doctor discovery, appointments, prescriptions, billing, profiles and availability in one practical full-stack application.</p></div>
+  </section>
+
+  <section class="about-detail-grid">
+    <article class="about-detail-card"><span class="feature-icon blue"><i class="fa-solid fa-layer-group"></i></span><h3>What we built</h3><p>Patient and doctor portals, appointment management, prescriptions, billing, profiles, availability and responsive pages.</p></article>
+    <article class="about-detail-card"><span class="feature-icon purple"><i class="fa-solid fa-code"></i></span><h3>Technology</h3><p>Python, Flask, SQLAlchemy, PostgreSQL/SQLite, HTML5, CSS3 and vanilla JavaScript.</p></article>
+    <article class="about-detail-card"><span class="feature-icon green"><i class="fa-solid fa-building-columns"></i></span><h3>College</h3><p><strong>Shri M. L. Gandhi Higher Education BCA College</strong><br>Modasa, Gujarat · BCA · 2026</p></article>
+  </section>
+
+  <section class="team-contact-card">
+    <div><span class="eyebrow">CONTACT THE TEAM</span><h2>Want to know more?</h2><p>For project discussion, demonstration or feedback, reach us on Telegram.</p></div>
+    <a class="btn primary large" href="https://t.me/fizzxo" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-telegram"></i> @fizzxo</a>
+  </section>
+</div>
+{% endmacro %}
+
+{% block public_content %}{{ about_body() }}{% endblock %}
+{% block content %}{{ about_body() }}{% endblock %}
