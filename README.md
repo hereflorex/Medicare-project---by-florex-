@@ -1,4 +1,4 @@
-# MediCare V2
+# MediCare -FLOREX 🪄
 
 A rebuilt Flask + SQLAlchemy hospital management project with a modern responsive UI.
 
