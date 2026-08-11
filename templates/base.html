@@ -9,10 +9,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=20260811-final2">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ui-enhancements.css') }}?v=20260811-ui1">
 </head>
 <body data-role="{{ current_role or 'guest' }}">
 <div id="toastRoot" class="toast-root"></div>
 <div id="pageLoader" class="page-loader"><div class="loader-ring"></div></div>
+
+<!-- Decorative animated background blobs (purely UI) -->
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span>
+  <span class="blob b2"></span>
+  <span class="blob b3"></span>
+  <span class="blob b4"></span>
+</div>
+
 {% if current_user %}
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
@@ -26,7 +36,7 @@
         <a href="/doctors" class="nav-link {% if request.path == '/doctors' %}active{% endif %}"><i class="fa-solid fa-user-doctor"></i><span>Doctors</span></a>
         <a href="/appointments" class="nav-link {% if request.path == '/appointments' %}active{% endif %}"><i class="fa-regular fa-calendar-check"></i><span>Appointments</span></a>
         <a href="/prescriptions" class="nav-link {% if request.path == '/prescriptions' %}active{% endif %}"><i class="fa-solid fa-prescription-bottle-medical"></i><span>Prescriptions</span></a>
-        {% if current_role == 'patient' %}<a href="/billing" class="nav-link {% if request.path == '/billing' %}active{% endif %}"><i class="fa-solid fa-file-invoice-dollar"></i><span>Billing</span></a>{% endif %}
+        {% if current_role == 'patient' %}<a href="/billing" class="nav-link {% if request.path == '/billing' %}active{% endif %}"><i class="fa-solid fa-file-invoice-dollar"></i><span>Billing</spa[...]</a>
         <a href="/profile" class="nav-link {% if request.path == '/profile' %}active{% endif %}"><i class="fa-regular fa-circle-user"></i><span>My Profile</span></a>
         <a href="/about" class="nav-link {% if request.path == '/about' %}active{% endif %}"><i class="fa-solid fa-circle-info"></i><span>About</span></a>
       </nav>
@@ -38,7 +48,7 @@
         <div class="crumbs">{% block crumb %}Overview{% endblock %}</div>
         <div class="top-actions">
           <button class="icon-btn" title="Theme" onclick="cycleTheme()"><i id="themeIcon" class="fa-solid fa-circle-half-stroke"></i></button>
-          <a class="profile-chip" href="/profile"><span class="avatar small">{{ current_user.name[:1]|upper }}</span><span class="hide-mobile">{{ current_user.name }}</span><i class="fa-solid fa-chevron-down hide-mobile"></i></a>
+          <a class="profile-chip" href="/profile"><span class="avatar small">{{ current_user.name[:1]|upper }}</span><span class="hide-mobile">{{ current_user.name }}</span><i class="fa-solid fa-c[...]</a>
         </div>
       </header>
       <div class="page-content">{% block content %}{% endblock %}</div>
