@@ -2,6 +2,8 @@
 
 A rebuilt Flask + SQLAlchemy hospital management project with a modern responsive UI.
 
+LIVD LINK 🥢 🔗 https://medicareflorex.up.railway.app/dashboard
+
 ## Included
 
 - Patient and Doctor registration/login
